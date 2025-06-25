@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Controllers;
 
 use App\Models\News;
+use App\Services\ImageUploadService;
 use Illuminate\Http\Request;
 
 class NewsService
