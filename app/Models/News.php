@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
 class News extends Model
 {
+    use HasFactory;
     protected $fillable = [
         'title',
         'content',
@@ -19,7 +21,9 @@ class News extends Model
     protected $casts = [
         'image' => 'string',
         'is_active' => 'boolean',
-        'published_at' => 'datetime',
+        'published_at' => 'datetime:Y-m-d H:i:s',
+        'created_at' => 'datetime:Y-m-d H:i:s',
+        'updated_at' => 'datetime:Y-m-d H:i:s',
     ];
 
     /**
@@ -35,7 +39,7 @@ class News extends Model
                 $model->slug = Str::slug($model->title) . '-' . Str::random(4);
             }
             if (empty($model->published_at)) {
-                $model->published_at = now();
+                //$model->published_at = now();
             }
         });
     }
