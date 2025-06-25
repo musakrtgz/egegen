@@ -2,47 +2,61 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreNewsRequest;
+use App\Http\Requests\UpdateNewsRequest;
+use App\Http\Resources\NewsResource;
+use App\Services\NewsService;
 
 class NewsController extends Controller
 {
+    public function __construct(protected NewsService $service)
+    {
+
+    }
+
     /**
-     * Display a listing of the resource.
+     * Listeleme işlemi
      */
     public function index()
     {
-        //
+        return NewsResource::collection($this->service->listForPublic());
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Yeni haber ekleme işlemi
      */
-    public function store(Request $request)
+    public function store(StoreNewsRequest $request)
     {
-
+        try {
+            $news = $this->service->store($request);
+            return response()->json(['message' => 'Haber başarıyla eklendi!', 'data' => NewsResource::make($news)], 201);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
     }
 
     /**
-     * Display the specified resource.
+     * Haber detaylarını gösterme işlemi
      */
     public function show(string $id)
     {
-        //
+        return new NewsResource($this->service->showForPublic($id));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Haberi güncelleme işlemi
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateNewsRequest $request, string $id)
     {
-        //
+        return new NewsResource($this->service->update($request, $id));
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Haberi silme işlemi
      */
     public function destroy(string $id)
     {
-        //
+        $this->service->destroy($id);
+        return response()->json([], 204);
     }
 }

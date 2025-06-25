@@ -30,15 +30,15 @@ class BearerTokenMiddleware
             );
 
             if (!$executed) {
-                return response()->json(['error' => 'Too Many Unauthorized Requests'], 429);
+                return response()->json(['message' => 'Too Many Unauthorized Requests'], 429);
             }
 
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['message' => 'Unauthorized'], 401);
         }
 
         // ip blokta ise geçerli token olsa bile erişim reddedilir
         if (!RateLimiter::remaining('unauthorized:' . $ip, $maxAttempts)) {
-            return response()->json(['error' => 'Too Many Unauthorized Requests'], 429);
+            return response()->json(['message' => 'Too Many Unauthorized Requests'], 429);
         }
 
         return $next($request);
